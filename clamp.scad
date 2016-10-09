@@ -1,25 +1,27 @@
+ClampThickness=30;
+ClampDiameter=100;
 
-rotate(a=[0,0,0]) {
-////BODY////
+include <polyScrewThread_r1.scad>
+
+
+module screw() {
+       hex_screw(15,4,55,100,1.5,2,24,8,0,0);
+ 
+}
+module clamp() {
+    difference(){
+        cylinder(ClampThickness, ClampDiameter/2, ClampDiameter/2, $fn=100);
+        cylinder(ClampThickness, ClampDiameter/2-ClampThickness/2, ClampDiameter/2-ClampThickness/2, $fn=100);
+        translate([0, -ClampDiameter/4, 0]) cube([ClampDiameter, ClampDiameter/2, ClampThickness]);
+         translate([0,-100, ClampThickness/2]) rotate([-90, 0, 0])screw();
+   
+     } ;
+     translate([-ClampThickness/2, ClampDiameter/2-10, 0]) cube([ClampThickness, 100, ClampThickness]);
+     
     
-difference() {
-    cube([40,60,60]);
-    translate([0,0,15])
-    cube([40,30,30]);
-
-////Top HOLE 12.5 MM////
-
-    translate([20,45,23])
-    cylinder(r=6.25,h=37,$fn=200);
-
-////NUT & BOLT HOLE////
-
-    translate([20,15,0])
-    cylinder(r=4,h=15,$fn=200);
-  
-    translate([20,15,9])
-    cylinder(r=7.4,h=6.1,$fn=6);
-        
-        
+    
+    
 }
-}
+
+
+clamp();
