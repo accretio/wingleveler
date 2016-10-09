@@ -5,13 +5,13 @@ use <parametric_involute_gear_v5.0.scad>
 use <spur_generator.scad>
 
 YokeDiameter=50;
-YokeLength=500;
+YokeLength=0;
 
 PanelHeight=300;
 PanelWidth=400;
 PanelThickness=20;
 
-YokePosition=-100;
+YokePosition=0;
 HornSpacing=120; 
 HornHeight=120; 
 HornDiameter=40;
@@ -237,6 +237,7 @@ module ap2() {
             translate([-2 * RingDiameter, - 2 * RingDiameter, HornHeight/2])
                 cube([4*RingDiameter, 4*RingDiameter, RingDiameter]);
         }
+        /*
         translate([-BoxWidth/2, -BoxDepth/4 - RingThickness/2, -240]) {
           difference(){
               cube([BoxWidth, BoxDepth, BoxHeight]);
@@ -256,7 +257,7 @@ module ap2() {
 		number_of_teeth = DriverNumberOfTeeth,
 		rim_width = 2);               
            }
-       }
+       } */
     }
     
    
@@ -264,5 +265,49 @@ module ap2() {
     
     
 }
-airplane();
- ap2();
+
+HolderHeight=40;
+HolderThickness=10;
+
+module ap3() {
+   // linear_extrude(height = RingDiameter, convexity = 10, scale=[2,1], $fn=100)
+    //  translate([2, 0, 0])
+         // scale([1.5,.5])circle(d=20);
+     //    square([RingThickness, RingThickness]);
+    
+    difference() {
+        difference() {
+            difference() {
+                rotate([-90, 0, 0]) {
+                    difference() {
+                        union() { 
+                             gear(circular_pitch=p,
+                               gear_thickness = RingThickness,
+                             rim_thickness = RingThickness,
+                             hub_thickness = RingThickness,
+                             number_of_teeth = RingNumberOfTeeth,
+                             circles=0);
+                         cylinder(RingThickness, RingDiameter, RingDiameter);
+                        }; 
+                         difference(){ 
+                              cylinder(RingThickness*2, RingDiameter-10, RingDiameter-10); 
+                              difference(){
+                                  cylinder(RingThickness*2, RingDiameter-10, RingDiameter-10); 
+                             translate([-2*RingDiameter - RingThickness/2, 0, -20]) 
+                                cylinder(RingThickness*2, 2* RingDiameter, 2*RingDiameter);  
+                              }
+                            
+                         }
+                    };
+                        }
+                // this is the spot for the roller ring
+                groove(RingR1);
+            };
+            translate([0, -RingThickness/2, 0]) groove(RingR2);
+       }   
+   }
+};
+
+
+ap3();
+
