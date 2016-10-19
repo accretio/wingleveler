@@ -9,7 +9,9 @@ module screw() {
        hex_screw(10,4,55,100,1.5,2,24,8,0,0);
  
 }
-module clamp() {
+
+
+module clamp(withHoles) {
     difference(){
         cylinder(ClampThickness, ClampDiameter/2+ClampThickness/2, ClampDiameter/2+ClampThickness/2, $fn=100);
         cylinder(ClampThickness, ClampDiameter/2, ClampDiameter/2, $fn=100);
@@ -22,9 +24,12 @@ module clamp() {
              cube([ClampThickness, ClampLength, ClampThickness]);
              translate([0, ClampLength-ClampZone, 0])cube([ClampThickness/3, ClampLength, ClampThickness]);
              translate([ClampThickness - ClampThickness/3, ClampLength-ClampZone, 0]) cube([ClampThickness/3, ClampLength, ClampThickness]);
-               translate([-40,ClampLength-ClampZone/2, ClampThickness/2]) rotate([90, 0, 90])screw();
+            //if (withHoles) { translate([-40,ClampLength-ClampZone/2, ClampThickness/2]) rotate([90, 0, 90])screw(); }
        
              
+         }
+	 if (withHoles) {
+             translate([-40,ClampLength-ClampZone/2, ClampThickness/2]) rotate([90, 0, 90])screw();
          }
          
      };

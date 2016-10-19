@@ -66,6 +66,8 @@ module clamp() {
   }
 }
 
+
+
 ScrewLength=100;
 ScrewRadius=10;
 ScrewEdge=1;
@@ -80,8 +82,8 @@ module screw() {
     }
 }
 
-RingDiameter=350;
-RingThickness=30;
+RingDiameter=HornSpacing + 2*HornDiameter;
+RingThickness=20;
 
 // this is the stepper motor (https://github.com/jcrocholl/kossel)
 
@@ -149,7 +151,29 @@ module ring() {
 BoxWidth=100;
 BoxDepth=60;
 BoxHeight=60;
+module ap() {
+    /* difference() {
+        translate([-ClampWidth/2, - PanelThickness - ClampThickness, -PanelHeight/3 - ClampThickness]) {
+            clamp();
+        }
+       // screw();
+    }; */
+  // screw();
+    
+    // now let's talk about how we articulate the stepper motors
+    
+    translate([0, PanelThickness, 0]) ring();
+    translate([200, 0, 60]) rotate([0, 00, 90]) nema17();
+    translate([PadDiameter/2, 10, -RingDiameter + BoxHeight - 20]) rotate([0, -90, 0]) nema17();
+    translate([-BoxWidth/2, 0, -RingDiameter - BoxHeight/2]) {
+        cube([BoxWidth, BoxDepth, BoxHeight]);
+    }
+}
+// Let's display some stuff
 
+
+
+// ap();
 
 BoxWidth=200;
 BoxDepth=100;
@@ -172,46 +196,116 @@ module groove(R) {
 }
 
 
-RingNumberOfTeeth=200;
+RingNumberOfTeeth=100;
 DriverNumberOfTeeth=6;
-p = fit_spur_gears(RingNumberOfTeeth, DriverNumberOfTeeth, RingDiameter/2);
+p = fit_spur_gears(RingNumberOfTeeth, DriverNumberOfTeeth, 230);
 
+module teeth() {
+	
+	// Simple Test:
+	
+
+gear (circular_pitch=p,
+		gear_thickness = 12,
+		rim_thickness = 15,
+		hub_thickness = 17,
+		circles=0,
+		number_of_teeth = DriverNumberOfTeeth,
+		rim_width = 2);
+
+}
+
+
+module ap2() {
+    
+     translate([0, YokePosition + YokeLength + HornDiameter/2 + 2*RingThickness, 0]) { 
+        difference() {
+            difference() {
+                difference() {
+                    rotate([90, 0, 0]) {
+                        gear (circular_pitch=p,
+		gear_thickness = RingThickness,
+		rim_thickness = RingThickness,
+		hub_thickness = RingThickness,
+	    number_of_teeth = RingNumberOfTeeth,
+		circles=0);
+                        cylinder(RingThickness, RingDiameter, RingDiameter);
+                    }
+                    // this is the spot for the roller ring
+                    groove(RingR1);
+                };
+                translate([0, -RingThickness/2, 0]) groove(RingR2);
+            }   
+            translate([-2 * RingDiameter, - 2 * RingDiameter, HornHeight/2])
+                cube([4*RingDiameter, 4*RingDiameter, RingDiameter]);
+        }
+        /*
+        translate([-BoxWidth/2, -BoxDepth/4 - RingThickness/2, -240]) {
+          difference(){
+              cube([BoxWidth, BoxDepth, BoxHeight]);
+              translate([0, RingThickness - BoxDepth/4 + RingThickness , 15]){ 
+                    cube([BoxWidth, RingThickness, BoxHeight]);
+              }
+              }
+          }; 
+           translate([-BoxWidth/2, 10, -205]) rotate([90, 0, 0]) { 
+               nema17();
+               translate([0, 0, 10]) {
+                   gear (circular_pitch=p,
+                        gear_thickness = 12,
+		rim_thickness = 15,
+		hub_thickness = 17,
+		circles=0,
+		number_of_teeth = DriverNumberOfTeeth,
+		rim_width = 2);               
+           }
+       } */
+    }
+    
+   
+   
+    
+    
+}
 
 HolderHeight=40;
 HolderThickness=10;
-
-
-
-module interior(){
-     difference(){
-         cylinder(RingThickness, RingDiameter/2-RingThickness, RingDiameter/2-RingThickness, $fn=100);
-        difference(){
-            cylinder(RingThickness, RingDiameter/2-RingThickness, RingDiameter/2-RingThickness, $fn=100);
-             translate([0, -RingDiameter/4-RingThickness/2, 0])
-     scale([1,0.5,1])cylinder(RingThickness, RingDiameter/2, RingDiameter/2, $fn=100);
-       translate([0, RingDiameter/4+ RingThickness/2, 0])
-     scale([1,0.5,1])cylinder(RingThickness, RingDiameter/2, RingDiameter/2, $fn=100);
-    
-        }
-     }
-}
-
 module ap3() {
-          
-    difference(){
-          gear(circular_pitch=p,
-                               gear_thickness = RingThickness,
-                             rim_thickness = RingThickness,
-                             hub_thickness = RingThickness,
-                             number_of_teeth = RingNumberOfTeeth,
-                             circles=0);
-                        interior();
-                        }; 
-                        
-            
-                    };
+    translate([50, -10, 20]) {
+        cube([30, HolderThickness, HolderHeight]);
     
+        }; 
+    translate([50, -10, 20]) {
+        cube([30, HolderThickness, HolderHeight]);
+    
+        }; 
+    translate([-RingDiameter, 100, 0]) {
+        cube([RingDiameter * 2, HolderThickness, HolderHeight]);
+    
+        }; 
+    difference() {
+            difference() {
+                difference() {
+                    rotate([-90, 0, 0]) {
+                        gear (circular_pitch=p,
+                        gear_thickness = RingThickness,
+                        rim_thickness = RingThickness,
+                        hub_thickness = RingThickness,
+                        number_of_teeth = RingNumberOfTeeth,
+                        circles=0);
+                        cylinder(RingThickness, RingDiameter, RingDiameter);
+                    }
+                    // this is the spot for the roller ring
+                    groove(RingR1);
+                };
+                translate([0, -RingThickness/2, 0]) groove(RingR2);
+            }   
+              }
+} ;
 
 
 ap3();
 
+translate([0, -HornDiameter, 0]){
+yoke();
+}
