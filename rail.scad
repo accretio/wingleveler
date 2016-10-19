@@ -85,14 +85,14 @@ module half(){
     }
 }
 
-module left(){
+module left_rail(){
     difference(){
         half();
         holding_screw();
     }
 }
 
-module right(){
+module right_rail(){
     difference(){
         assembly();
         half();
@@ -107,6 +107,3 @@ module holding_screw(){
 }
 /// now we need to split the assembly & print it. 
 
-
-left();
-//right();
