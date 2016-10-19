@@ -11,17 +11,12 @@ RingDiameter=140;
 
 p = fit_spur_gears(RingNumberOfTeeth, DriverNumberOfTeeth, 180);
 
-
-
 module groove(R) {
     difference() {
         cylinder(RingThickness/2, R, R, $fn = fn);
         cylinder(RingThickness/2, R - GrooveWidth, R - GrooveWidth, $fn = fn);
     }
 }
-
-
-
 
 module rail() {
    difference(){  
@@ -44,20 +39,23 @@ module rail() {
 
 
 module arm() {
-    //ghost_clamp();
+ 
       difference() {
-          translate([-ClampThickness/2, -RingDiameter, 0]) {
-          cube([ClampThickness, RingDiameter, RingThickness]);
-              
-      };
-      ghost_clamp();
-  }
+        translate([-ClampThickness/2, -RingDiameter, 0]) {
+            cube([ClampThickness, RingDiameter, RingThickness]);
+        };
+       ghost_clamp();
+      }
 }
 
 module ghost_clamp() {
     translate([0, ClampDiameter /2 + ClampLength - ClampZone, 0]){
         rotate([0, 0, 180]) {
-            clamp(true);
+            union(){ 
+                clamp_screw();
+                clamp();
+                
+            }
         }
     }
 }
@@ -104,10 +102,11 @@ module right(){
 
 module holding_screw(){
     translate([-ClampThickness/6, -RingDiameter / 2, 40]){
-        rotate([0, 180, 0])screw();
+        rotate([0, 180, 0]) medium_screw();
     }
 }
 /// now we need to split the assembly & print it. 
 
 
 left();
+//right();

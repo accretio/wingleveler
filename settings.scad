@@ -10,4 +10,4 @@ ClampZone=20;
 
 GrooveWidth=5;
 
-fn=360;
+fn=0;
