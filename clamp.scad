@@ -22,7 +22,7 @@ module clamp() {
              cube([ClampThickness, ClampLength, ClampThickness]);
              translate([0, ClampLength-ClampZone, 0])cube([ClampThickness/3, ClampLength, ClampThickness]);
              translate([ClampThickness - ClampThickness/3, ClampLength-ClampZone, 0]) cube([ClampThickness/3, ClampLength, ClampThickness]);
-               translate([0,ClampLength-ClampZone/2, ClampThickness/2]) rotate([90, 0, 90])screw();
+               translate([-40,ClampLength-ClampZone/2, ClampThickness/2]) rotate([90, 0, 90])screw();
        
              
          }
