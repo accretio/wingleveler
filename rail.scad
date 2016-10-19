@@ -13,8 +13,17 @@ p = fit_spur_gears(RingNumberOfTeeth, DriverNumberOfTeeth, 180);
 
 
 
+module groove(R) {
+    difference() {
+        cylinder(RingThickness/2, R, R, $fn = fn);
+        cylinder(RingThickness/2, R - GrooveWidth, R - GrooveWidth, $fn = fn);
+    }
+}
+
+
+
+
 module rail() {
-    
    difference(){  
      gear (circular_pitch=p,
 		gear_thickness = RingThickness,
@@ -22,13 +31,17 @@ module rail() {
 		hub_thickness = RingThickness,
 	    number_of_teeth = RingNumberOfTeeth,
 		circles=0);
-     cylinder(RingThickness, RingDiameter, RingDiameter);
-          translate([-2*RingDiameter,0, 0]){
+     cylinder(RingThickness, RingDiameter, RingDiameter, $fn = fn);
+     translate([-2*RingDiameter,0, 0]){
          cube([4*RingDiameter, 2*RingDiameter, RingThickness]);
      };
-      
+     groove(RingDiameter+22);
+     translate([0, 0, RingThickness/2]) {
+          groove(RingDiameter+12);
+     }
   }
 }
+
 
 module arm() {
     //ghost_clamp();
@@ -51,12 +64,15 @@ module ghost_clamp() {
 
 
 
+
+
 module assembly() {
     union() {
         arm();
         rail();
     };
 }
+
 
 
 module half(){
@@ -94,4 +110,4 @@ module holding_screw(){
 /// now we need to split the assembly & print it. 
 
 
-right();
+left();
