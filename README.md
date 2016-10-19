@@ -1,9 +1,4 @@
-= Autopilot =
+# Wing leveler
 
-This project defined an "automatic copilot" that you can clamp on the copilot yoke.
+A portable wing leveler that attaches to the aircraft's yoke.
 
-== Features ==
-
-- Wing leveler
-
-== Installation ==
