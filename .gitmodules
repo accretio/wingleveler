@@ -1,0 +1,6 @@
+[submodule "nutsnbolts"]
+	path = nutsnbolts
+	url = https://github.com/JohK/nutsnbolts
+[submodule "deps/nutsnbolts"]
+	path = deps/nutsnbolts
+	url = https://github.com/JohK/nutsnbolts

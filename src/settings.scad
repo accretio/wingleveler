@@ -11,3 +11,7 @@ ClampZone=20;
 GrooveWidth=5;
 
 fn=100;
+
+
+RingThickness = 20; 
+RingDiameter=140;
