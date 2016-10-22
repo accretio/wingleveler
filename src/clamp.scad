@@ -1,10 +1,19 @@
 include <settings.scad>
 include <utils.scad>
 
+include <../deps/nutsnbolts/cyl_head_bolt.scad>
+
 module clamp_screw() {
-    translate([-ClampThickness/2, ClampDiameter/2, 0]) {
-    translate([-40, ClampLength-ClampZone/2, ClampThickness/2]) rotate([90, 0, 90]) medium_screw();   
-    }
+    rotate([0, 90, 0]) {
+  translate([-ClampThickness/2, ClampLength + ClampDiameter/2 - ClampZone/2, -5]) {
+            translate([0, 0, 20]) {
+               hole_through(name="M3", l=20, cl=0.1, h=10, hcl=0.4); 
+            }
+            translate([0, 0, 0]) {
+                nutcatch_parallel("M3", l=5);
+            }
+            }
+        }
 }
 
 module clamp() {
@@ -20,12 +29,12 @@ module clamp() {
                 cube([ClampThickness, ClampLength, ClampThickness]);
                 translate([0, ClampLength-ClampZone, 0])cube([ClampThickness/3, ClampLength, ClampThickness]);
                 translate([ClampThickness - ClampThickness/3, ClampLength-ClampZone, 0]) cube([ClampThickness/3, ClampLength, ClampThickness]);
-             // clamp_screw();
+             
             }          
         }
         clamp_screw();
     }
 	 
 };
-    
+
 clamp();

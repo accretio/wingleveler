@@ -1,9 +1,10 @@
 include <../deps/nutsnbolts/cyl_head_bolt.scad>
 
 include <settings.scad> 
-include <nema17.scad>
-include <rail.scad>
+use <nema17.scad>
+use <rail.scad>
 use <raspberry_pi_3.scad>
+
 
 // the controller is moving on the rail 
 
@@ -44,6 +45,7 @@ module controller_back_plate() {
 
 Tolerance = 2;
 BoxThickness = 8; 
+
 module controller_front_plate() {
     
     translate([0, 0, RingDiameter + 74]){
@@ -74,15 +76,15 @@ module controller_front_plate() {
 
 module m3_screw_for_nema() {
      rotate([90, 0, 0]) {
-        screw("M3x10", thread="modeled"); // screw M20x100 with thread
+       // screw("M3x10", thread="modeled"); // screw M20x100 with thread
         translate([0, 0, 10]) hole_through(name="M3", l=10, cl=0.1, h=10, hcl=0.4);
     }
 }
 
 module nema_screws() {
-     translate([15, 4, 15]) {
+    translate([15, 4, 15]) {
        m3_screw_for_nema();
-    }; 
+    } 
     
     translate([-16, 4, 15]) {
         m3_screw_for_nema();
@@ -98,53 +100,51 @@ module nema_screws() {
 }
 
 module controller() { 
-    //pi_holder();
-   /*translate([0, 0, 31]) {
-       rotate([90, 0, 0]){ 
-            stepper_assembly();
-        }
-    } */ 
+   
     
-    // controller_back_plate(); 
-   controller_front_plate(); 
+    controller_back_plate(); 
+   //controller_front_plate(); 
   
+}
+
+
+
+module block_screw1() {
+    rotate([90, 0, 0]) {
+            //screw("M3x30", thread="modeled");
+            translate([0, 0, 10]) hole_through(name="M3", l=35, cl=0.1, h=10, hcl=0.4);
+            translate([0, 0, -25]) nutcatch_sidecut("M3", l=100, clk=0.1, clh=0.1, clsl=0.1);
+        }
+}
+
+module block_screw2() {
+    rotate([90, 0, 0]) {
+            //screw("M3x30", thread="modeled");
+            translate([0, 0, 10]) hole_through(name="M3", l=35, cl=0.1, h=10, hcl=0.4);
+            rotate([0, 0, 180]) translate([0, 0, -25]) nutcatch_sidecut("M3", l=100, clk=0.1, clh=0.1, clsl=0.1);
+        }
 }
 
 module block_screws() {
     translate([36, -RingThickness -Tolerance - BoxDepth + 10, 4]) {
-        rotate([90, 0, 0]) {
-            screw("M3x30", thread="modeled");
-            translate([0, 0, 10]) hole_through(name="M3", l=35, cl=0.1, h=10, hcl=0.4);
-             translate([0, 0, -25]) nutcatch_sidecut("M3", l=100, clk=0.1, clh=0.1, clsl=0.1);
-        }
+       block_screw1(); 
     }
     
      translate([36, -RingThickness -Tolerance - BoxDepth + 10, 34]) {
-        rotate([90, 0, 0]) {
-            screw("M3x30", thread="modeled");
-            translate([0, 0, 10]) hole_through(name="M3", l=35, cl=0.1, h=10, hcl=0.4);
-             translate([0, 0, -25]) nutcatch_sidecut("M3", l=100, clk=0.1, clh=0.1, clsl=0.1);
-        }
+         block_screw1(); 
     }
     
     translate([-36, -RingThickness -Tolerance - BoxDepth + 10, 34]) {
-        rotate([90, 0, 0]) {
-            screw("M3x30", thread="modeled");
-            translate([0, 0, 10]) hole_through(name="M3", l=35, cl=0.1, h=10, hcl=0.4);
-            rotate([0, 0, 180]) translate([0, 0, -25]) nutcatch_sidecut("M3", l=100, clk=0.1, clh=0.1, clsl=0.1);
-        }
+        block_screw2(); 
     }
     
      translate([-36, -RingThickness -Tolerance - BoxDepth + 10, 4]) {
-        rotate([90, 0, 0]) {
-            screw("M3x30", thread="modeled");
-            translate([0, 0, 10]) hole_through(name="M3", l=35, cl=0.1, h=10, hcl=0.4);
-            rotate([0, 0, 180]) translate([0, 0, -25]) nutcatch_sidecut("M3", l=100, clk=0.1, clh=0.1, clsl=0.1);
-        }
+        block_screw2(); 
     }
     
     
 }
+
 
 module pi_holder() {
      top();
@@ -154,15 +154,16 @@ module stepper_assembly() {
     translate([0, 0, -10]) {
             nema17();
     }
-    gear (circular_pitch=p,
+   /* gear (circular_pitch=p,
               gear_thickness = RingThickness,
 		      rim_thickness = RingThickness,
 		      hub_thickness = RingThickness,
 		      circles=0,
 		      number_of_teeth = DriverNumberOfTeeth,
 		      rim_width = 0);  
+    */
 }
 
-//stepper_assembly();
+stepper_assembly();
 
-controller();
+//controller();

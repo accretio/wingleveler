@@ -1,6 +1,6 @@
 /// THE RAIL 
 
-
+include <../deps/nutsnbolts/cyl_head_bolt.scad>
 include <settings.scad>
 use <parametric_involute_gear_v5.0.scad>
 use <spur_generator.scad>
@@ -45,6 +45,7 @@ module arm() {
             cube([ClampThickness, RingDiameter, RingThickness]);
         };
        ghost_clamp();
+        clamp_screw();
       }
 }
 
@@ -101,9 +102,18 @@ module right_rail(){
 }
 
 module holding_screw(){
-    translate([-ClampThickness/6, -RingDiameter / 2, 40]){
-        rotate([0, 180, 0]) medium_screw();
-    }
+         translate([0, -RingDiameter / 2, 0]) {
+            translate([0, 0, RingThickness + 5]) {
+               hole_through(name="M3", l=20, cl=0.1, h=10, hcl=0.4); 
+            }
+            translate([0, 0, 5]) {
+                nutcatch_parallel("M3", l=5);
+            }
+            }
+        
+   
 }
 /// now we need to split the assembly & print it. 
 
+left_rail();
+right_rail();
