@@ -38,11 +38,12 @@ module controller_back_plate() {
             }
         }
         nema_screws();
+        block_screws();
     } 
 }
 
 Tolerance = 2;
-BoxThickness = 5; 
+BoxThickness = 8; 
 module controller_front_plate() {
     
     translate([0, 0, RingDiameter + 74]){
@@ -64,9 +65,10 @@ module controller_front_plate() {
         translate([-BoxWidth/2 , - RingThickness - Tolerance, BoxHeight / 2 ]) {
             cube([BoxWidth, RingThickness + Tolerance, BoxHeight / 2 ], center=false);
         }
+        block_screws();
     } 
      
-      //bottom();
+     
 }
 
 
@@ -97,15 +99,51 @@ module nema_screws() {
 
 module controller() { 
     //pi_holder();
-   translate([0, 0, 31]) {
+   /*translate([0, 0, 31]) {
        rotate([90, 0, 0]){ 
             stepper_assembly();
         }
-    } 
+    } */ 
     
-    controller_back_plate(); 
- //  controller_front_plate(); 
+    // controller_back_plate(); 
+   controller_front_plate(); 
   
+}
+
+module block_screws() {
+    translate([36, -RingThickness -Tolerance - BoxDepth + 10, 4]) {
+        rotate([90, 0, 0]) {
+            screw("M3x30", thread="modeled");
+            translate([0, 0, 10]) hole_through(name="M3", l=35, cl=0.1, h=10, hcl=0.4);
+             translate([0, 0, -25]) nutcatch_sidecut("M3", l=100, clk=0.1, clh=0.1, clsl=0.1);
+        }
+    }
+    
+     translate([36, -RingThickness -Tolerance - BoxDepth + 10, 34]) {
+        rotate([90, 0, 0]) {
+            screw("M3x30", thread="modeled");
+            translate([0, 0, 10]) hole_through(name="M3", l=35, cl=0.1, h=10, hcl=0.4);
+             translate([0, 0, -25]) nutcatch_sidecut("M3", l=100, clk=0.1, clh=0.1, clsl=0.1);
+        }
+    }
+    
+    translate([-36, -RingThickness -Tolerance - BoxDepth + 10, 34]) {
+        rotate([90, 0, 0]) {
+            screw("M3x30", thread="modeled");
+            translate([0, 0, 10]) hole_through(name="M3", l=35, cl=0.1, h=10, hcl=0.4);
+            rotate([0, 0, 180]) translate([0, 0, -25]) nutcatch_sidecut("M3", l=100, clk=0.1, clh=0.1, clsl=0.1);
+        }
+    }
+    
+     translate([-36, -RingThickness -Tolerance - BoxDepth + 10, 4]) {
+        rotate([90, 0, 0]) {
+            screw("M3x30", thread="modeled");
+            translate([0, 0, 10]) hole_through(name="M3", l=35, cl=0.1, h=10, hcl=0.4);
+            rotate([0, 0, 180]) translate([0, 0, -25]) nutcatch_sidecut("M3", l=100, clk=0.1, clh=0.1, clsl=0.1);
+        }
+    }
+    
+    
 }
 
 module pi_holder() {
