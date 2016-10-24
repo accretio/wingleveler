@@ -6,10 +6,10 @@ include <../deps/nutsnbolts/cyl_head_bolt.scad>
 module clamp_screw() {
     rotate([0, 90, 0]) {
   translate([-ClampThickness/2, ClampLength + ClampDiameter/2 - ClampZone/2, -5]) {
-            translate([0, 0, 20]) {
+            translate([0, 0, 22]) {
                hole_through(name="M3", l=20, cl=0.1, h=10, hcl=0.4); 
             }
-            translate([0, 0, 0]) {
+            translate([0, 0, -2]) {
                 nutcatch_parallel("M3", l=5);
             }
             }
@@ -38,3 +38,4 @@ module clamp() {
 };
 
 clamp();
+clamp_screw();
