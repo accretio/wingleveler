@@ -5,8 +5,8 @@ include <rail.scad>
 
 RingThickness=5;
 module shaft() {
-    translate([4, 0, RingThickness/2]) {
-        cube([5, 5, RingThickness], center=true);
+    translate([2.5, 0, RingThickness/2]) {
+        cube([2, 5, RingThickness], center=true);
     };
 difference() {gear (circular_pitch=p,
               gear_thickness = RingThickness,
