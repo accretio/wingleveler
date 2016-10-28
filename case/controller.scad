@@ -15,27 +15,30 @@ Padding=4;  // unused
 BoxDepth=10;
 
 
-module guide() {
-    cylinder(RingThickness * 0.90, GrooveWidth * 0.45, GrooveWidth * 0.45, $fn = fn);
-}
-
 
 module controller_back_plate() {
-    translate([0, 0, RingDiameter + 74]){
+  
+    
+     
+   intersection(){
+    translate([0, Tolerance, RingDiameter + 75]) {
         rotate([90, 0, 0]) {
-           //left_rail(); 
-            translate([ 0, -RingDiameter - 22 + GrooveWidth /2 , -RingThickness /2]) {
-                guide(); 
-            }
+            groove(RingDiameter+22, GrooveWidth-Tolerance);
         }
     }
+
+    translate([-BoxWidth/2 + BoxThickness,  -BoxDepth - Tolerance, BoxThickness]) {
+            cube([BoxWidth - 2*BoxThickness , RingThickness + Tolerance, BoxHeight - BoxThickness], center=false);
+        }
+
+}
     difference(){ 
         translate([0, BoxDepth/2, BoxHeight/2]) {
             cube([BoxWidth, BoxDepth, BoxHeight], center=true);
         }
-        translate([0, 10, 31]) {
+        translate([0, 20, 31]) {
             rotate([90, 0, 00]) {
-                cylinder(RingThickness, 16, 16, $fn = fn); 
+                cylinder(RingThickness*2, 16, 16, $fn = fn); 
             }
         }
         nema_screws();
@@ -48,21 +51,23 @@ BoxThickness = 8;
 
 module controller_front_plate() {
     
-    translate([0, 0, RingDiameter + 74]){
-        rotate([90, 0, 0]) {
-            //left_rail(); 
-            translate([ 0, -RingDiameter - 12 + GrooveWidth /2,  RingThickness/2 + 2]) {
-                guide(); 
-            }
-        }
-    } 
    
+   intersection(){
+    translate([0, -(BoxDepth + 2*Tolerance), RingDiameter + 75]) {
+        rotate([90, 0, 0]) {
+            groove(RingDiameter+12, GrooveWidth-Tolerance);
+        }
+    }
+     translate([-BoxWidth/2 + BoxThickness, - RingThickness - Tolerance, BoxThickness]) {
+            cube([BoxWidth - 2*BoxThickness , RingThickness + Tolerance, BoxHeight - BoxThickness], center=false);
+        }
+}
     difference() {
         translate([-BoxWidth/2, - RingThickness - BoxDepth - Tolerance, 0]) {
             cube([BoxWidth, BoxDepth + RingThickness + Tolerance, BoxHeight], center=false);
         }
-         translate([-BoxWidth/2 + BoxThickness, - RingThickness - Tolerance, BoxThickness]) {
-            cube([BoxWidth - 2*BoxThickness , RingThickness + Tolerance, BoxHeight - BoxThickness], center=false);
+         translate([-BoxWidth/2 + 1.5*BoxThickness, - RingThickness - Tolerance, 1.5*BoxThickness]) {
+            cube([BoxWidth - 3*BoxThickness , RingThickness + Tolerance, BoxHeight - BoxThickness], center=false);
         }
         translate([-BoxWidth/2 , - RingThickness - Tolerance, BoxHeight / 2 ]) {
             cube([BoxWidth, RingThickness + Tolerance, BoxHeight / 2 ], center=false);
@@ -102,7 +107,7 @@ module nema_screws() {
 module controller() { 
    
     
-    controller_back_plate(); 
+   controller_back_plate(); 
    //controller_front_plate(); 
   
 }
@@ -126,19 +131,19 @@ module block_screw2() {
 }
 
 module block_screws() {
-    translate([36, -RingThickness -Tolerance - BoxDepth + 10, 4]) {
+    translate([BoxWidth/2 - 0.75*BoxThickness, -RingThickness -Tolerance - BoxDepth + 10, 7]) {
        block_screw1(); 
     }
     
-     translate([36, -RingThickness -Tolerance - BoxDepth + 10, 34]) {
+     translate([BoxWidth/2 - 0.75*BoxThickness, -RingThickness -Tolerance - BoxDepth + 10, 32]) {
          block_screw1(); 
     }
     
-    translate([-36, -RingThickness -Tolerance - BoxDepth + 10, 34]) {
+    translate([-BoxWidth/2 + 0.75*BoxThickness, -RingThickness -Tolerance - BoxDepth + 10, 32]) {
         block_screw2(); 
     }
     
-     translate([-36, -RingThickness -Tolerance - BoxDepth + 10, 4]) {
+     translate([-BoxWidth/2 + 0.75*BoxThickness, -RingThickness -Tolerance - BoxDepth + 10, 7]) {
         block_screw2(); 
     }
     
@@ -164,7 +169,7 @@ module stepper_assembly() {
     */
 }
 
-controller_front_plate();
+controller();
 //stepper_assembly();
 
 //controller();

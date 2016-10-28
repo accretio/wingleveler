@@ -11,10 +11,10 @@ RingDiameter=140;
 
 p = fit_spur_gears(RingNumberOfTeeth, DriverNumberOfTeeth, 180);
 
-module groove(R) {
+module groove(R, W) {
     difference() {
         cylinder(RingThickness/2, R, R, $fn = fn);
-        cylinder(RingThickness/2, R - GrooveWidth, R - GrooveWidth, $fn = fn);
+        cylinder(RingThickness/2, R - W, R - W, $fn = fn);
     }
 }
 
@@ -30,9 +30,9 @@ module rail() {
      translate([-2*RingDiameter,0, 0]){
          cube([4*RingDiameter, 2*RingDiameter, RingThickness]);
      };
-     groove(RingDiameter+22);
+     groove(RingDiameter+22, GrooveWidth);
      translate([0, 0, RingThickness/2]) {
-          groove(RingDiameter+12);
+          groove(RingDiameter+12, GrooveWidth);
      }
   }
 }
