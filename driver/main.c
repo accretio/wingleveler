@@ -55,7 +55,11 @@ int main() {
 
 #define TWO_PI				(2.0f * (float)M_PI)
 
-            float newMagYaw = atan2f(compass_data[0], compass_data[1]);
+            //            float newMagYaw = atan2f(compass_data[0], compass_data[1]);
+
+            // todo: decent calibration ..
+            
+            float newMagYaw = -atan2f(-(compass_data[0]  + 450) * 4195 / 640, (compass_data[1]+450) * 4195 / 640);
 
             if (newMagYaw != newMagYaw) {
                   printf("newMagYaw NAN\n");
