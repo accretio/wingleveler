@@ -8,7 +8,7 @@ LDIR =../lib
 _DEPS =
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ = linux_glue.o inv_mpu.o main.o
+_OBJ =  linux_glue.o inv_mpu.o main.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 $(ODIR)/%.o: %.c $(DEPS)
@@ -16,9 +16,13 @@ $(ODIR)/%.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 wingleveler: $(OBJ)
-	gcc -o $@ $^ $(CFLAGS) -lm
+	gcc -o $@ $^ $(CFLAGS) -lm -lpigpio -lrt
 
 .PHONY: clean
 
 clean:
 	rm -f $(ODIR)/*.o *~ core $(INCDIR)/*~ wingleveler
+
+
+send:
+	rsync -a . pi@10.0.0.247:/tmp/wingleveler
