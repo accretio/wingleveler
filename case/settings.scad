@@ -4,7 +4,7 @@ RingNumberOfTeeth=100;
 DriverNumberOfTeeth=6;
 
 ClampThickness=20;
-ClampDiameter=30;
+ClampDiameter=50;
 ClampLength=60;
 ClampZone=20;
 

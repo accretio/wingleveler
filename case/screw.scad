@@ -1,3 +1,3 @@
-use <clamp.scad>
+include <clamp.scad>
 
-screw();
+big_screw();

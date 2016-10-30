@@ -17,6 +17,8 @@ module clamp_screw() {
 }
 
 module clamp() {
+   //     translate([0,-40, ClampThickness/2]) rotate([-90, 0, 0]) big_screw();
+    
     difference(){
         cylinder(ClampThickness, ClampDiameter/2+ClampThickness/2, ClampDiameter/2+ClampThickness/2, $fn=fn);
         cylinder(ClampThickness, ClampDiameter/2, ClampDiameter/2, $fn=fn);
@@ -32,10 +34,9 @@ module clamp() {
              
             }          
         }
-        clamp_screw();
+       clamp_screw();
     }
 	 
 };
 
 clamp();
-clamp_screw();

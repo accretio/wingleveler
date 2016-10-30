@@ -7,7 +7,9 @@ module screw(diameter) {
 }
 
 module big_screw() {
-       screw(10);
+       hex_screw(11,4,55,40,1.5,2,24,8,0,0);
+ 
+       
 }
 
 module medium_screw() {

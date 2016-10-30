@@ -23,7 +23,7 @@ module controller_back_plate() {
    intersection(){
     translate([0, Tolerance, RingDiameter + 75]) {
         rotate([90, 0, 0]) {
-            groove(RingDiameter+22, GrooveWidth-Tolerance);
+            groove(RingDiameter+22 - Tolerance/2, GrooveWidth-Tolerance);
         }
     }
 
