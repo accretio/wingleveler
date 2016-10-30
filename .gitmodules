@@ -1,3 +1,6 @@
 [submodule "nutsnbolts"]
 	path = nutsnbolts
 	url = https://github.com/JohK/nutsnbolts
+[submodule "case/src/nutsnbolts"]
+	path = case/src/nutsnbolts
+	url = https://github.com/JohK/nutsnbolts
