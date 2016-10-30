@@ -4,3 +4,9 @@
 [submodule "case/src/nutsnbolts"]
 	path = case/src/nutsnbolts
 	url = https://github.com/JohK/nutsnbolts
+[submodule "driver/MPU9250"]
+	path = driver/MPU9250
+	url = https://github.com/femtoio/MPU9250.git
+[submodule "driver/src/MPU9250"]
+	path = driver/src/MPU9250
+	url = https://github.com/femtoio/MPU9250.git
