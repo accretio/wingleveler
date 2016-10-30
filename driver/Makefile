@@ -1,6 +1,6 @@
 IDIR =../include
-CC=gcc
-CFLAGS=-I$(IDIR)
+CC=cc
+CFLAGS=-I$(IDIR) -DMPU9250 -DRASPBERRY_PI
 
 ODIR=obj
 LDIR =../lib
@@ -8,12 +8,12 @@ LDIR =../lib
 _DEPS =
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ = MPU9250/MPU9250.o main.o
+_OBJ = inv_mpu.o main.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 $(ODIR)/%.o: %.c $(DEPS)
 	mkdir -p $(ODIR)
-	$(CC) -c -o $(notdir $@) $< $(CFLAGS)
+	$(CC) -c -o $@ $< $(CFLAGS)
 
 wingleveler: $(OBJ)
 	gcc -o $@ $^ $(CFLAGS)
