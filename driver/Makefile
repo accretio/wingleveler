@@ -8,7 +8,7 @@ LDIR =../lib
 _DEPS =
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ = inv_mpu.o main.o
+_OBJ = linux_glue.o inv_mpu.o main.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 $(ODIR)/%.o: %.c $(DEPS)
@@ -16,7 +16,7 @@ $(ODIR)/%.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 wingleveler: $(OBJ)
-	gcc -o $@ $^ $(CFLAGS)
+	gcc -o $@ $^ $(CFLAGS) -lm
 
 .PHONY: clean
 
