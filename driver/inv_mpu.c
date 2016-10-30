@@ -39,13 +39,7 @@
 
 #if defined RASPBERRY_PI
 
-#include <linux_glue.h>
-
-// glue taken from https://github.com/vmayoral/bb_mpu9150/blob/master/src/linux-mpu9150/glue/linux_glue.h
- 
-#error "coucou"
-
-#define i2c_write
+#include "linux_glue.h"
 
 #elif defined EMPL_TARGET_STM32F4
 #include "i2c.h"   
