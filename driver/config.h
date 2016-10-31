@@ -25,4 +25,14 @@
 
 #define TWO_PI				(2.0f * (float)M_PI)
 
+// Wing leveler configuration
+
+#define MAX_STEP 515
+
+#define DRIFT_THRESHOLD 4
+#define DRIFT_MAX 30
+
+#define MONITORING_DELAY 200
+#define MAGNIFICATION_FACTOR 5
+
 #endif
