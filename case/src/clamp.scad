@@ -1,7 +1,7 @@
 include <settings.scad>
 include <utils.scad>
 
-include <../deps/nutsnbolts/cyl_head_bolt.scad>
+include <nutsnbolts/cyl_head_bolt.scad>
 
 module clamp_screw() {
     rotate([0, 90, 0]) {
