@@ -25,9 +25,6 @@ struct state_t
 
       // Compass reference
       float target_yaw;
-
-     
-
 };
 
 int setup_gpio(struct state_t *state)
