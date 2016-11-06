@@ -1,4 +1,4 @@
-[![Slack Status](https://accret.io/badge.svg)](https://accret.io)
+[![Slack Status](http://accret.io/badge.svg)](https://accret.io)
 
 ![Loader](screenshots/left_rail.png)
 ![Loader](screenshots/right_rail.png)
