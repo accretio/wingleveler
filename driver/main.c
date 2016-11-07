@@ -5,6 +5,8 @@
 #include <pigpio.h>
 
 #include "inv_mpu.h"
+#include "inv_mpu_dmp_motion_driver.h"
+#include "quaternion.h"
 #include "linux_glue.h"
 #include "config.h"
 
@@ -26,6 +28,17 @@ struct state_t
 
       // Compass reference
       float target_yaw;
+
+
+      // dmp data:
+      short rawGyro[3];
+      short rawAccel[3];
+      long rawQuat[4];
+      unsigned long dmpTimestamp;
+
+      float bank;
+      float bank_reference;
+
 };
 
 int setup_gpio(struct state_t *state)
@@ -70,7 +83,7 @@ int set_direction(struct state_t *state, int direction) {
       return 0;
 }
 
-int setup_mag(struct state_t *state)
+int setup_mpu(struct state_t *state)
 {
       linux_set_i2c_bus(IMU_IC2_BUS);
       if (mpu_init(NULL)) {
@@ -85,12 +98,33 @@ int setup_mag(struct state_t *state)
             printf("mpu_set_sensors() failed\n");
             return -1;
       }
-      if (mpu_configure_fifo(INV_XYZ_GYRO | INV_XYZ_ACCEL | INV_XYZ_COMPASS)) {
+      if (mpu_configure_fifo(INV_XYZ_GYRO | INV_XYZ_ACCEL)) {
             printf("mpu_configure_fifo() failed\n");
             return -1;
       }
-      if (mpu_set_sample_rate(10)) {
+      if (mpu_set_sample_rate(SAMPLE_RATE)) {
             printf("mpu_set_sample_rate() failed\n");
+            return -1;
+      }
+      if (mpu_set_compass_sample_rate(SAMPLE_RATE)) {
+            printf("mpu_set_compass_sample_rate() failed\n");
+            return -1;
+      }
+      if (dmp_load_motion_driver_firmware()) {
+            printf("dmp_load_motion_driver_firmware() failed\n");
+            //  return -1;
+      }
+      if (dmp_enable_feature(DMP_FEATURE_6X_LP_QUAT)) {
+            printf("dmp_enable_feature() failed\n");
+            return -1;
+      }
+      if (dmp_set_fifo_rate(SAMPLE_RATE)) {
+            printf("dmp_set_fifo_rate() failed\n");
+            return -1;
+      }
+      
+      if (mpu_set_dmp_state(1)) {
+            printf("nmpu_set_dmp_state(1) failed\n");
             return -1;
       }
       return 0;
@@ -121,7 +155,9 @@ int setup(struct state_t *state)
       if (ret = setup_gpio(state)) {
             return ret; 
       }
-      ret = setup_mag(state);
+      if (ret = setup_mpu(state)) {
+            return ret; 
+      }
       return ret; 
 }
 
@@ -262,6 +298,139 @@ int calibrate(struct state_t *state) {
       return;
 }
 
+int data_ready()
+{
+	short status;
+
+	if (mpu_get_int_status(&status) < 0) {
+		printf("mpu_get_int_status() failed\n");
+		return 0;
+	}
+
+ 	return (status == 0x0103);
+}
+
+int read_dmp(struct state_t *state)
+{
+	short sensors;
+	unsigned char more = 1;
+
+	if (!data_ready()) {
+        return -1;
+  }
+
+	while (more) {
+        // Fell behind, reading again
+        if (dmp_read_fifo(state->rawGyro, state->rawAccel, state->rawQuat, &state->dmpTimestamp, &sensors, &more) < 0) {
+              printf("dmp_read_fifo() failed\n");
+              return -1;
+        }
+	}
+
+	return 0;
+}
+
+int update_bank(struct state_t *state)
+{
+      int ret = read_dmp(state);
+      if (ret) {
+            return ret;
+      } else {
+            printf("new mpu data: %ld %ld %ld %ld\n", state->rawQuat[0], state->rawQuat[1], state->rawQuat[2], state->rawQuat[3]);
+            
+            quaternion_t dmpQuat;
+            
+            
+            dmpQuat[QUAT_W] = (float)state->rawQuat[QUAT_W];
+            dmpQuat[QUAT_X] = (float)state->rawQuat[QUAT_X];
+            dmpQuat[QUAT_Y] = (float)state->rawQuat[QUAT_Y];
+            dmpQuat[QUAT_Z] = (float)state->rawQuat[QUAT_Z];
+            
+            quaternionNormalize(dmpQuat);
+            
+            float dmpEuler[3];
+            quaternionToEuler(dmpQuat, dmpEuler);
+            
+            // printf("euler: %f %f %f\n", dmpEuler[0] * RAD_TO_DEGREE, dmpEuler[1] * RAD_TO_DEGREE, dmpEuler[2] * RAD_TO_DEGREE);
+            
+            state->bank = dmpEuler[0] * RAD_TO_DEGREE;
+            
+            return 0;
+      }
+}
+
+
+int loop_dmp(struct state_t *state)
+{
+      
+      while(!kbhit()) {
+
+            // no point in refreshing the mag more than ever 135ms
+            struct timespec start, end_of_cycle, elapsed;
+            clock_gettime(CLOCK_REALTIME, &start);
+           
+            if (!update_bank(state)) {
+                  
+                  float bank = state->bank - state->bank_reference;
+                  
+                  if (fabs(bank) > DRIFT_THRESHOLD) {
+                        // here we need to decide where to move. 
+                        // we have a function drift -> step
+
+                  // not sure if we'll be able to do something that doesn't rely on the rate of change.
+
+                  int delta = (int)abs((bank * MAGNIFICATION_FACTOR));
+
+                  printf("current bank is %f, current step is %d, delta %d\n",
+                         bank,
+                         state->current_step,
+                         delta);
+
+                  int steps; 
+                  if (bank < 0) {
+                        set_direction(state, NEMA_DIRECTION_LEFT);
+                        steps = min(min(delta, state->stepping_rate), state->current_step); 
+
+                  } else {
+                        set_direction(state, NEMA_DIRECTION_RIGHT);
+                        steps = min(min(delta, state->stepping_rate), state->max_step - state->current_step); 
+                  }
+
+                  printf("going to run %d steps\n", steps);
+                  for (steps > 0; steps--;) {
+                        printf("stepping the motor, current step is %d\n", state->current_step);
+                        if (step(state)) {
+                              printf("couldn't step the motor\n");
+                              return -1; 
+                        };
+                  }
+                  
+                  } else {
+                        printf("current bank is %f, current step is %d, all good\n",
+                               bank,
+                               state->current_step);
+                  }
+
+                  clock_gettime(CLOCK_REALTIME, &end_of_cycle);
+                  
+                  timespec_diff(&start, &end_of_cycle, &elapsed);
+                  
+                  long wait_time = (MONITORING_DELAY - (elapsed.tv_nsec / 1000000l));
+                  
+                  printf("elapsed: %l, waiting for %u\n", elapsed.tv_nsec, wait_time); 
+                  if (wait_time > 0) {
+                        linux_delay_ms(wait_time);
+                  }     
+            
+            }
+      }
+
+      return 0;
+      
+}
+
+
+
 int main(int argc, char **argv)
 {
 
@@ -309,16 +478,15 @@ int main(int argc, char **argv)
         
       printf("wing leveler is ready (max_step: %d) !\n", state.max_step);
       
-      refresh_yaw(&state);
-
-      // todo: maybe wait a few seconds here, or average the values, or something?
-      // in the real product this assignement would be triggered by pushing a button
-      // do we don't need to account for warm up time.
-      state.target_yaw = state.yaw ;
-
-      printf("our target yaw is %f\n", state.target_yaw);
+      linux_delay_ms(2000);
+      while(update_bank(&state)) {
+            printf("couldn't read initial bank\n");
+            linux_delay_ms(2000);
+      }
       
-      loop(&state);
+      state.bank_reference = state.bank; 
+
+      loop_dmp(&state);
      
  finalize:
       

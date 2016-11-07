@@ -8,7 +8,7 @@ LDIR =../lib
 _DEPS =
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ =  linux_glue.o inv_mpu.o main.o
+_OBJ =  linux_glue.o inv_mpu.o inv_mpu_dmp_motion_driver.o quaternion.o vector3d.o main.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 $(ODIR)/%.o: %.c $(DEPS)

@@ -10,7 +10,7 @@
 
 #define NEMA_DIRECTION_LEFT 0
 #define NEMA_DIRECTION_RIGHT 1
-#define NEMA_17_STEP_PAUSE 5000
+#define NEMA_17_STEP_PAUSE 4000
 
 // IMU 9250
 
@@ -24,15 +24,17 @@
 // Math 101
 
 #define TWO_PI				(2.0f * (float)M_PI)
+#define	RAD_TO_DEGREE		(180.0f / (float)M_PI)
 
 // Wing leveler configuration
 
 #define MAX_STEP 4000
 
-#define DRIFT_THRESHOLD 2
+#define DRIFT_THRESHOLD 1
 #define DRIFT_MAX 30
 
 #define MONITORING_DELAY 200
 #define MAGNIFICATION_FACTOR 10
 
+#define SAMPLE_RATE 10
 #endif
