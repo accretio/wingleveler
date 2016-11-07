@@ -13,6 +13,7 @@ struct state_t
       short current_direction;
       int current_step ;
       int stepping_rate ; // this is the number of steps we can do per monitoring period
+      int max_step;
       
       // Compass calibration
       short compass_fsr; 
@@ -46,12 +47,12 @@ int setup_gpio(struct state_t *state)
             }
       }
       // initially go to the left
-      if (gpioWrite(GPIO_NEMA_DIRECTION_PIN, NEMA_DIRECTION_LEFT)) {
+      if (gpioWrite(GPIO_NEMA_DIRECTION_PIN, NEMA_DIRECTION_RIGHT)) {
             printf("couldn't set up the direction to the left\n");
             return -1;
       }
-      state->current_direction = NEMA_DIRECTION_LEFT;
-      state->current_step = 0; // bottom dead center
+      state->current_direction = NEMA_DIRECTION_RIGHT;
+      state->current_step = 0; // left 
       state->stepping_rate = MONITORING_DELAY * 1000 / NEMA_17_STEP_PAUSE;
 
       return 0 ;
@@ -59,6 +60,7 @@ int setup_gpio(struct state_t *state)
 
 int set_direction(struct state_t *state, int direction) {
       if (state->current_direction != direction) {
+            printf("setting direction to %d\n", direction);
             if (gpioWrite(GPIO_NEMA_DIRECTION_PIN, direction)) {
                   printf("couldn't set up the direction\n");
                   return -1;
@@ -93,7 +95,6 @@ int setup_mag(struct state_t *state)
       }
       return 0;
 }
-
 
 int step(struct state_t *state)
 {
@@ -148,7 +149,7 @@ int refresh_yaw(struct state_t *state)
       
       state->yaw = state->yaw * 360.0f / TWO_PI; 
       
-      printf("yaw is %f\n", state->yaw);
+      printf("yaw is %f - x:%hi, y:%hi, z:%hi\n", state->yaw, state->compass_data[0], state->compass_data[1], state->compass_data[2]);
 
       return 0;
 }
@@ -199,25 +200,25 @@ int loop(struct state_t *state)
             if (fabs(drift) > DRIFT_THRESHOLD) {
                   // here we need to decide where to move. 
                   // we have a function drift -> step
-                  int target_step = fmin(drift * MAGNIFICATION_FACTOR, MAX_STEP);
-                  printf("current drift is %f, current step is %d, targetting %d\n",
+
+                  // not sure if we'll be able to do something that doesn't rely on the rate of change.
+
+                  int delta = (int)abs((drift * MAGNIFICATION_FACTOR));
+
+                  printf("current drift is %f, current step is %d, delta %d\n",
                          drift,
                          state->current_step,
-                         target_step);
-           
-                  printf("targetting step %d\n", target_step);
+                         delta);
 
-                  if (target_step < state->current_step) {
+                  int steps; 
+                  if (drift < 0) {
                         set_direction(state, NEMA_DIRECTION_LEFT);
+                        steps = min(min(delta, state->stepping_rate), state->current_step); 
+
                   } else {
                         set_direction(state, NEMA_DIRECTION_RIGHT);
+                        steps = min(min(delta, state->stepping_rate), state->max_step - state->current_step); 
                   }
-
-                  int delta = abs(state->current_step - target_step);
-
-                  // let's move as much as we can during monitoring delay, then poll again
-
-                  int steps = min(min(delta, state->stepping_rate), MAX_STEP - abs(state->current_step)); 
 
                   printf("going to run %d steps\n", steps);
                   for (steps > 0; steps--;) {
@@ -250,13 +251,26 @@ int loop(struct state_t *state)
       return 0;
 
 }
-int main()
+
+int calibrate(struct state_t *state) {
+      printf("hit any key when the weight reaches the end of the rail\n");
+      
+      while(!kbhit()) {
+            step(state);
+      }
+      state->max_step = state->current_step;
+      return;
+}
+
+int main(int argc, char **argv)
 {
 
       printf("testing the GPIO\n");
 
+      int opt;
+
       struct state_t state ; 
-      
+    
       // todo: get this information from a file on the disk
       state.compass_offset[VEC_X] = 450;
       state.compass_offset[VEC_Y] = 450;
@@ -268,8 +282,32 @@ int main()
             printf("couldn't set up properly, exiting\n");
             goto finalize; 
       }
+   
+      state.max_step = MAX_STEP;
       
-      printf("all ready!\n");
+      while ((opt = getopt(argc, argv, "clr")) != -1) {
+            switch (opt) {
+            case 'c':
+                  calibrate(&state);
+                  break;
+           case 'l':
+                 set_direction(&state, NEMA_DIRECTION_LEFT);
+                 while(!kbhit()) {
+                       step(&state);
+                 }
+                 break;
+            case 'r':
+                  set_direction(&state, NEMA_DIRECTION_RIGHT);
+                  while(!kbhit()) {
+                        step(&state);
+                  }
+                  break;
+            default:
+                  break;
+            }
+      }
+        
+      printf("wing leveler is ready (max_step: %d) !\n", state.max_step);
       
       refresh_yaw(&state);
 

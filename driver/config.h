@@ -27,12 +27,12 @@
 
 // Wing leveler configuration
 
-#define MAX_STEP 515
+#define MAX_STEP 4000
 
-#define DRIFT_THRESHOLD 4
+#define DRIFT_THRESHOLD 2
 #define DRIFT_MAX 30
 
 #define MONITORING_DELAY 200
-#define MAGNIFICATION_FACTOR 5
+#define MAGNIFICATION_FACTOR 10
 
 #endif

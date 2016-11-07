@@ -26,7 +26,7 @@ include <polyScrewThread_r1.scad>
 PI=3.141592; 
 RailLength=240;
 RailDiameter=60; 
-RodTol=0.5;
+RodTol=0.2;
 module rod() {
     difference(){
         translate([-ClampThickness, -ClampThickness/2, 0]) {
@@ -88,8 +88,8 @@ module arm() {
 
 
 //rod();
-holder();
-arm();
+//holder();
+//arm();
 
 
 // now the driver
