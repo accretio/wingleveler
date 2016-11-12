@@ -23,3 +23,8 @@ assigned heading
 + InvenSense MPU-9250
 + NEMA 17 stepper motor
 + A4988 stepper driver
+
+
+# Litterature
+
++ https://ocw.mit.edu/courses/aeronautics-and-astronautics/16-333-aircraft-stability-and-control-fall-2004/lecture-notes/
