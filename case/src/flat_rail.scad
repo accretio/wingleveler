@@ -122,8 +122,8 @@ module driver_gear(){
 
 PlateDepth=10; 
 PlateRailDepth=40;
-PlateWidth=60;
-PlateHeight=80;
+PlateWidth=70;
+PlateHeight=130;
 
 module m3_screw_for_nema() {
      rotate([90, 0, 0]) {
@@ -169,24 +169,77 @@ module plate() {
           translate([-RailDiameter/2, 0, -10]) {
                cylinder(10, 16, 16);
           }
+         
      }
-     // the little rails
-     intersection(){
-          translate([0, -PlateWidth/2, -PlateDepth]) {
-               cube([PlateWidth, PlateWidth, PlateRailDepth]);
+
+// the little rails
+     difference() {
+          intersection(){
+               translate([0, -PlateWidth/2, -PlateDepth]) {
+                    cube([PlateWidth, PlateWidth, DriverLength + PlateDepth + 5]);
+               }
+               translate([0, 0, -DriverLength - 10]) {
+                    rails(RodTol);
+               }
           }
-          translate([0, 0, -PlateRailDepth]) {
-               rails(RodTol);
-          }  
+          plate_screws();
+     }
+     // the box
+     difference(){
+          translate([-PlateHeight+42.5, 0, (DriverLength + 5) / 2]) {
+               difference() {
+                    cube([45, PlateWidth, DriverLength + 5], center=true);
+                    cube([35, PlateWidth-20, DriverLength + 5], center=true);
+               }
+          };
+          plate_screws();
+     }
+
+}
+
+module plate_screws() {
+     // the screws to connect the parts
+     translate([10, PlateWidth/2 - 12, DriverLength + 19]) {
+          hole_through(name="M3", l=16, cl=0.1, h=10, hcl=0.4);
+          translate([0, 0, -18]) {
+               nutcatch_sidecut("M3", l=100, clk=0.4, clh=0.4, clsl=0.4);
+          }
+     }
+
+      // the screws to connect the parts
+     translate([10, -PlateWidth/2 + 12, DriverLength + 19]) {
+          hole_through(name="M3", l=16, cl=0.1, h=10, hcl=0.4);
+          translate([0, 0, -18]) {
+               nutcatch_sidecut("M3", l=100, clk=0.4, clh=0.4, clsl=0.4);
+          }
+     }
+
+       // the screws to connect the parts
+     translate([-PlateHeight + 30, -PlateWidth/2 + 5, DriverLength + 19]) {
+          hole_through(name="M3", l=16, cl=0.1, h=10, hcl=0.4);
+          rotate([0, 0, -90]) {
+               translate([0, 0, -18]) {
+                    nutcatch_sidecut("M3", l=100, clk=0.4, clh=0.4, clsl=0.4);
+               }
+               }
+     }
+
+        // the screws to connect the parts
+     translate([-PlateHeight + 30, PlateWidth/2 - 5, DriverLength + 19]) {
+          hole_through(name="M3", l=16, cl=0.1, h=10, hcl=0.4);
+          rotate([0, 0, 90]) {
+               translate([0, 0, -18]) {
+                    nutcatch_sidecut("M3", l=100, clk=0.4, clh=0.4, clsl=0.4);
+               }
+               }
      }
 }
-plate();
-/*translate([-RailDiameter/2, 0, -10]) {
-  nema17();
-  /*translate([-31/2, -31/2, 10]) {
-  rotate([-90, 0, 0]) {
-  nema_screws();
-  }
-  }*/
 
+plate();
+/*
+translate([-RailDiameter/2, 0, -10]) { 
+  nema17();
+ 
+  }
+*/
 
