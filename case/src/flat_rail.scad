@@ -235,7 +235,46 @@ module plate_screws() {
      }
 }
 
-plate();
+LeftPartWidth=30;
+
+module left_part() {
+     difference() {
+     translate([0, 0, PlateHeight/2 - PlateDepth]) {
+          difference(){
+          translate([-PlateHeight+ClampThickness, -PlateWidth/2, -PlateDepth]) {
+               cube([PlateHeight, PlateWidth, PlateDepth]);
+               
+          }
+          translate([-20, -(ClampThickness + RodTol)/2, -PlateDepth]) {
+               cube([ClampThickness + RodTol + 20, ClampThickness + RodTol, PlateDepth]);
+          }
+          }
+          
+          intersection(){
+               translate([0, -PlateWidth/2, -PlateDepth]) {
+                    cube([PlateWidth, PlateWidth, PlateDepth]);
+               }
+               translate([0, 0, -DriverLength - 10]) {
+                    rails(RodTol);
+               } 
+          }
+          translate([-PlateHeight/2, 0, LeftPartWidth/2]) {
+               difference() {
+                    cube([PlateHeight - 40, PlateWidth-20, LeftPartWidth], center=true);
+                    translate([5, 0, 0]) {
+                         cube([PlateHeight - 45, PlateWidth-30, LeftPartWidth-10], center=true);
+                    }
+               }
+          }
+     }
+     plate_screws();
+   }  
+     
+}
+
+//plate();
+left_part();
+
 /*
 translate([-RailDiameter/2, 0, -10]) { 
   nema17();
