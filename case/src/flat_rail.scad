@@ -241,13 +241,13 @@ module left_part() {
      difference() {
      translate([0, 0, PlateHeight/2 - PlateDepth]) {
           difference(){
-          translate([-PlateHeight+ClampThickness, -PlateWidth/2, -PlateDepth]) {
-               cube([PlateHeight, PlateWidth, PlateDepth]);
-               
-          }
-          translate([-20, -(ClampThickness + RodTol)/2, -PlateDepth]) {
-               cube([ClampThickness + RodTol + 20, ClampThickness + RodTol, PlateDepth]);
-          }
+               translate([-PlateHeight+ClampThickness, -PlateWidth/2, -PlateDepth]) {
+                    cube([PlateHeight, PlateWidth, PlateDepth]);
+                    
+               }
+               translate([-20, -(ClampThickness + RodTol)/2, -PlateDepth]) {
+                    cube([ClampThickness + RodTol + 20, ClampThickness + RodTol, PlateDepth]);
+               }
           }
           
           intersection(){
@@ -258,7 +258,7 @@ module left_part() {
                     rails(RodTol);
                } 
           }
-          translate([-PlateHeight/2, 0, LeftPartWidth/2]) {
+          translate([-PlateHeight/2, 0, LeftPartWidth/2 - 5]) {
                difference() {
                     cube([PlateHeight - 40, PlateWidth-20, LeftPartWidth], center=true);
                     translate([5, 0, 0]) {
@@ -280,5 +280,6 @@ translate([-RailDiameter/2, 0, -10]) {
   nema17();
  
   }
-*/
 
+
+*/
