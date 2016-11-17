@@ -25,4 +25,4 @@ clean:
 
 
 send:
-	rsync -a . pi@10.0.0.247:/tmp/wingleveler
+	rsync -a . pi@10.0.0.138:/tmp/wingleveler

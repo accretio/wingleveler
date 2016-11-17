@@ -35,6 +35,9 @@ struct state_t
 
   // logging
   FILE *logger;
+
+  // manual
+  int action; 
   
 };
 

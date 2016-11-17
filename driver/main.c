@@ -391,7 +391,9 @@ int main(int argc, char **argv)
       
   state.compass_range[VEC_X] = 640;
   state.compass_range[VEC_Y] = 640;
-      
+
+  state.action = 0;
+  
   if (setup(&state)) {
     printf("couldn't set up properly, exiting\n");
     goto finalize; 
