@@ -100,9 +100,9 @@ int setup(struct state_t *state)
   if (ret = setup_gpio(state)) {
     return ret; 
   }
-  /* if (ret = setup_mpu(state)) {
+  if (ret = setup_mpu(state)) {
     return ret; 
-    } */
+  }  
   return ret; 
 }
 
@@ -402,7 +402,7 @@ int main(int argc, char **argv)
   state.max_step = MAX_STEP;
   state.nema_pause = NEMA_17_STEP_PAUSE;
       
-  while ((opt = getopt(argc, argv, "clrm:")) != -1) {
+  while ((opt = getopt(argc, argv, "clra:m:")) != -1) {
     switch (opt) {
     case 'c':
       calibrate(&state);
@@ -423,22 +423,23 @@ int main(int argc, char **argv)
       start_logging(&state, optarg);
       manual_loop(&state);
       goto finalize;
+    case 'a':
+      printf("wing leveler is ready (max_step: %d) !\n", state.max_step);
+      start_logging(&state, optarg);
+      linux_delay_ms(2000);
+      while(update_bank(&state)) {
+        printf("couldn't read initial bank\n");
+        linux_delay_ms(2000);
+      }
+      state.bank_reference = state.bank; 
+      loop_dmp(&state);
+      goto finalize;
     default:
       break;
     }
   }
         
-  printf("wing leveler is ready (max_step: %d) !\n", state.max_step);
-      
-  linux_delay_ms(2000);
-  while(update_bank(&state)) {
-    printf("couldn't read initial bank\n");
-    linux_delay_ms(2000);
-  }
-      
-  state.bank_reference = state.bank; 
-
-  loop_dmp(&state);
+ 
   
  finalize:
 

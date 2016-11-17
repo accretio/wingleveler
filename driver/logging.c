@@ -23,7 +23,7 @@ int log_state(struct state_t *state)
 
     fprintf(state->logger,"%d.%06d: bank: %f step:%d\n",
             tv.tv_sec, tv.tv_usec, 
-            state->yaw,
+            state->bank,
             state->current_step);
   }
 }
