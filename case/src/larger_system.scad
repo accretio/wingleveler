@@ -6,7 +6,7 @@ include <utils.scad>
 include <nutsnbolts/cyl_head_bolt.scad>
 
 
-Final=true;
+Final=false;
 ClampRailTolerance=0.1; // we want a *lot* of friction here. later we'll add safety pins
 GrooveDepth=5;
 
@@ -44,19 +44,21 @@ module clamp() {
    
 }
 
-
-translate([100, 0, 0]) {
-     difference() {
-          clamp();
-          common_rail(ClampRailTolerance);
+module clamp_left() {
+     translate([100, 0, 0]) {
+          difference() {
+               clamp();
+               common_rail(ClampRailTolerance);
+          }
      }
 }
 
-
-translate([-100, 0, 0]) {
-     difference() {
-          clamp();
-          common_rail(ClampRailTolerance);
+module clamp_right() {
+     translate([-100, 0, 0]) {
+          difference() {
+               clamp();
+               common_rail(ClampRailTolerance);
+          }
      }
 }
 
@@ -143,6 +145,7 @@ module left_common_rail() {
           right_lip();
           rail_screws();
      }
+     rod();
 }
 
 module right_common_rail() {
@@ -151,8 +154,40 @@ module right_common_rail() {
           left_lip();
           rail_screws();
      }
+     difference() {
+          rod();
+          translate([RingDiameter/2, 0, 0]) {
+               cube([RingDiameter, RingDiameter, RingDiameter], center=true);
+          }
+     } 
 }
 
+
+PI=3.141592; 
+
+RailDiameter=60; // don't change that if you don't want to have to reprint the weight .. 
+RodTol=0.2;
+
+module rod() {
+     translate([0, 20, 0]) {
+          rotate([0, 90, 0]) {
+               rotate([0, 0, -90]) {
+                    difference() {
+                         translate([-RailDepth, -RailDepth/2, -RailWidth/2]) {
+                              cube([RailDepth, RailDepth, RailWidth ]);   
+                         }
+                         translate([-RailDiameter/2 - RodTol/2, 0, -RailWidth/2]) {
+                              screw_thread(RailDiameter+RodTol,10,55,RailWidth,PI/4, 0);
+                         }
+                    }
+               }
+          }
+     }
+}
+
+right_common_rail();
+
+     
 module rail_screws() {
      
      module m3_screw_assembly() {
@@ -175,13 +210,13 @@ module rail_screws() {
      }
      
 }
-
+/*
 translate([50, 0, 0]) {
      left_common_rail();
 }
 
 right_common_rail();
-
+*/
 
 
 module rail_groove(tolerance) {
@@ -191,7 +226,8 @@ module rail_groove(tolerance) {
 
 use <flat_rail.scad>
 
-translate([0, 20, 3]) {
+/*
+translate([0, 20, 0]) {
      rotate([0, 90, 0])
           rotate([0, 0, -90])
      {
@@ -199,3 +235,4 @@ translate([0, 20, 3]) {
       //    driver_gear();
      }
 }
+*/
