@@ -49,7 +49,7 @@ module clamp() {
      translate([-180/2, -ClampThickness/2, 0]) {
          cube([180, ClampThickness, ClampThickness]);
      }
-     arm();
+     arm(); 
 	 
 };
 

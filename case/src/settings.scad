@@ -4,7 +4,12 @@ RingNumberOfTeeth=100;
 DriverNumberOfTeeth=6;
 
 ClampThickness=20;
-ClampDiameter=50; // C172 is 19mm 
+
+
+// this is the diameter of the hole inside the clamp
+ClampDiameter=55; 
+
+
 ClampLength=30;
 ClampZone=20;
 

@@ -24,7 +24,7 @@ include <polyScrewThread_r1.scad>
  */
 
 PI=3.141592; 
-RailLength=240;
+RailLength=400;
 RailDiameter=60; 
 RodTol=0.2;
 module rod() {
@@ -38,6 +38,7 @@ module rod() {
         
      }
 }
+
 
 GrooveDepth=5; 
 
@@ -97,7 +98,7 @@ module arm() {
 
 
 //rod();
-//holder();
+holder();
 //arm();
 
 
@@ -273,7 +274,7 @@ module left_part() {
 }
 
 //plate();
-left_part();
+//left_part();
 
 /*
 translate([-RailDiameter/2, 0, -10]) { 
