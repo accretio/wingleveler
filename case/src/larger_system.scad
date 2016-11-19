@@ -6,7 +6,7 @@ include <utils.scad>
 include <nutsnbolts/cyl_head_bolt.scad>
 
 
-Final=false;
+Final=true;
 ClampRailTolerance=0.1; // we want a *lot* of friction here. later we'll add safety pins
 GrooveDepth=5;
 
@@ -16,7 +16,7 @@ module clamp() {
      // translate([0,-100, 0]) rotate([-90, 0, 0]) big_screw();
 
     
-     translate([-ClampThickness/2, -82, 0]) {
+     translate([-ClampThickness/2, -85, 0]) {
           rotate([0, 90, 0]) {
                difference(){
                     cylinder(ClampThickness, ClampDiameter/2+ClampThickness/2, ClampDiameter/2+ClampThickness/2, $fn=fn);
@@ -25,7 +25,7 @@ module clamp() {
                          cube([ClampDiameter, ClampDiameter / 1.3, ClampThickness]);
                     }
                     if (Final) {
-                         translate([0, -50, ClampThickness/2]) {
+                         translate([0, -55, ClampThickness/2]) {
                               rotate([-90, 0, 0]) big_screw();
                          }
                     }
@@ -35,7 +35,7 @@ module clamp() {
 
     
      // this is for the rail
-     translate([0, -30, 0]) {
+     translate([0, -35, 0]) {
           difference() {
                cube([ClampThickness, ClampThickness * 3, ClampThickness * 2], center=true);
   
@@ -62,6 +62,8 @@ module clamp_right() {
      }
 }
 
+
+//clamp_left();
 
 // we need at least 20 between the clamps
 // the max we can reasonably do is something like 40cm.
@@ -145,7 +147,12 @@ module left_common_rail() {
           right_lip();
           rail_screws();
      }
-     rod();
+     difference() {
+          rod();
+          translate([-RailWidth/2, 0, 0]) {
+               cube([RailWidth, RingDiameter, RingDiameter], center=true);
+          }
+     }
 }
 
 module right_common_rail() {
@@ -156,8 +163,8 @@ module right_common_rail() {
      }
      difference() {
           rod();
-          translate([RingDiameter/2, 0, 0]) {
-               cube([RingDiameter, RingDiameter, RingDiameter], center=true);
+          translate([RailWidth/2, 0, 0]) {
+               cube([RailWidth, RingDiameter, RingDiameter], center=true);
           }
      } 
 }
@@ -185,7 +192,7 @@ module rod() {
      }
 }
 
-right_common_rail();
+left_common_rail();
 
      
 module rail_screws() {
