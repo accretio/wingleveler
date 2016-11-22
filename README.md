@@ -1,7 +1,7 @@
 [![Slack Status](http://accret.io/badge.svg)](https://accret.io)
 
 ![Loader](screenshots/left_rail.png)
-![Loader](screenshots/right_rail.png)
+![Loader](screenshots/pcb.png)
 
 # Wing leveler
 
@@ -28,3 +28,8 @@ assigned heading
 # Litterature
 
 + https://ocw.mit.edu/courses/aeronautics-and-astronautics/16-333-aircraft-stability-and-control-fall-2004/lecture-notes/
+
+# Videos
+
++ https://www.youtube.com/watch?v=mazS7KZnoZ4
++ https://www.youtube.com/watch?v=BYXDKPSYu64
