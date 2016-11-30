@@ -1,4 +1,4 @@
-// manual control of the weight + logging
+// manual control of the weight
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,53 +7,24 @@
 #include <pthread.h>
 #include "config.h"
 #include "state.h"
-#include "control.h"
+#include "servo.h"
 
 void sigterm_handler(int signo){
   endwin();
   exit(0);
 }
 
-pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
-pthread_mutex_t mtx = PTHREAD_MUTEX_INITIALIZER;
-
-void *execute(struct state_t *state)
-{
-  while(1) {
-    switch(state->action) {
-    case 0:
-      printf("waiting for action to change\n");
-      pthread_cond_wait(&cond, &mtx);
-      pthread_mutex_unlock(&mtx);
-      break; 
-    case 1:
-      set_direction(state, NEMA_DIRECTION_LEFT);
-      step(state);
-      break;
-    case 2:
-      set_direction(state, NEMA_DIRECTION_RIGHT);
-      step(state);
-      break;
-    case -1:
-      return;
-    default:
-      break;
-    }
-  }
-}
-
 int manual_loop(struct state_t *state)
 {
   int c;
   int rc;
-  pthread_t thread;
 
   initscr();
  
   sigset(SIGINT, sigterm_handler);
 
-  if (rc = pthread_create(&thread, NULL, execute, (void *)state)) {
-    return rc; 
+  if (rc = start_servo(state)) {
+    return rc;
   }
   
   noecho();
@@ -77,18 +48,20 @@ int manual_loop(struct state_t *state)
         break;
       case KEY_LEFT:
         printw("\rmoving left from %d", state->current_step);
-        state->action = 1;
+        state->action = MOVE_LEFT;
         pthread_cond_signal(&cond);
         break;
       case KEY_RIGHT:
         printw("\rmoving right from %d", state->current_step);
-        state->action = 2;
+        state->action = MOVE_RIGHT;
         pthread_cond_signal(&cond);
         break;
       case ' ':
-        state->action = 0 ;
+        state->action = DONT_MOVE;
+        pthread_cond_signal(&cond);
         break ;
       case 'q':
+        state->action = DISENGAGE;
         goto finalize;
       default:
         break; 
