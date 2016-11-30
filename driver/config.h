@@ -24,8 +24,7 @@
 
 // Math 101
 
-#define TWO_PI				(2.0f * (float)M_PI)
-#define	RAD_TO_DEGREE		(180.0f / (float)M_PI)
+#define	RAD_TO_DEGREE (180.0f / (float)M_PI)
 
 // Wing leveler configuration
 
@@ -38,4 +37,10 @@
 #define MAGNIFICATION_FACTOR 10
 
 #define SAMPLE_RATE 10
+
+// Correction logic
+
+#define BANK_TOLERANCE 1
+#define BANK_CORRECTION_FACTOR 1
+
 #endif

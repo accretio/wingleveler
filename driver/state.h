@@ -2,12 +2,13 @@
 #define STATE_H
 
 #include <stdio.h>
+#include <pthread.h>
 
 struct state_t
 {
   short current_direction;
-  int current_step ;
-  int stepping_rate ; // this is the number of steps we can do per monitoring period
+  int current_step;
+  int stepping_rate; // this is the number of steps we can do per monitoring period
   int max_step;
   int nema_pause;
       
@@ -23,7 +24,6 @@ struct state_t
   // Compass reference
   float target_yaw;
 
-
   // dmp data:
   short rawGyro[3];
   short rawAccel[3];
@@ -32,13 +32,16 @@ struct state_t
 
   float bank;
   float bank_reference;
-
+  float bank_delta;
+  unsigned long bankTimestamp; 
+  
   // logging
   FILE *logger;
 
-  // manual
-  int action; 
-  
+  // servo
+  int action;
+  pthread_t servo_thread;
+
 };
 
 #endif
