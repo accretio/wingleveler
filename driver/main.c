@@ -40,7 +40,7 @@ int main(int argc, char **argv)
     printf("couldn't set up properly, exiting\n");
     goto finalize; 
   }
-  while ((opt = getopt(argc, argv, "clra:m:")) != -1) {
+  while ((opt = getopt(argc, argv, "clra:m:k:")) != -1) {
     switch (opt) {
     case 'c':
       calibrate(&state);
@@ -66,6 +66,12 @@ int main(int argc, char **argv)
       goto finalize;
     case 'a':
       printf("wing leveler is ready (max_step: %d) !\n", state.max_step);
+      start_logging(&state, optarg);
+      automated_loop(&state);
+      goto finalize;
+    case 'k':
+      printf("wing leveler is ready(centered) (max_step: %d) !\n", state.max_step);
+      state.current_step = MAX_STEP/2 ;
       start_logging(&state, optarg);
       automated_loop(&state);
       goto finalize;

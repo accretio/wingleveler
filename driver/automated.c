@@ -16,10 +16,17 @@
 
 int automated_loop(struct state_t *state)
 {
+  int rc;
+  
   refresh_ahrs(state);
   linux_delay_ms(WARMING_DELAY);
   refresh_ahrs(state);
   state->bank_reference=state->bank;
+
+  if (rc = start_servo(state)) {
+    return rc;
+  }
+  
   while(!kbhit()) {
     refresh_ahrs(state);
     printf("current bank: %f, current bank rate: %f, current action: %d\n",
@@ -27,7 +34,6 @@ int automated_loop(struct state_t *state)
            state->bank_delta,
            state->action);
 
-   
     if (fabs(state->bank) < BANK_TOLERANCE) {
       state->action = DONT_MOVE;
     } else {
