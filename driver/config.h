@@ -3,8 +3,8 @@
 
 // GPIO Configuration
 
-#define GPIO_NEMA_DIRECTION_PIN 23
-#define GPIO_NEMA_STEP_PIN 24
+#define GPIO_NEMA_DIRECTION_PIN 24
+#define GPIO_NEMA_STEP_PIN 23
 
 // NEMA BEHAVIOR
 
