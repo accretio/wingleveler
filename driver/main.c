@@ -35,7 +35,7 @@ int main(int argc, char **argv)
 
   int opt;
   struct state_t state ; 
-    
+  
   if (setup(&state)) {
     printf("couldn't set up properly, exiting\n");
     goto finalize; 
@@ -50,12 +50,14 @@ int main(int argc, char **argv)
       while(!kbhit()) {
         step(&state);
       }
+      printf("final position is %d\n", state.current_step);
       break;
     case 'r':
       set_direction(&state, NEMA_DIRECTION_RIGHT);
       while(!kbhit()) {
         step(&state);
       }
+      printf("final position is %d\n", state.current_step);
       break;
     case 'm':
       start_logging(&state, optarg);
@@ -65,7 +67,6 @@ int main(int argc, char **argv)
     case 'a':
       printf("wing leveler is ready (max_step: %d) !\n", state.max_step);
       start_logging(&state, optarg);
-      //start_ahrs(&state); 
       automated_loop(&state);
       goto finalize;
     default:
@@ -77,7 +78,6 @@ int main(int argc, char **argv)
   
  finalize:
 
-  pthread_exit(NULL);
   cleanup_state(&state);
          
   return 0;

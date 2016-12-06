@@ -22,7 +22,8 @@ int manual_loop(struct state_t *state)
   initscr();
  
   sigset(SIGINT, sigterm_handler);
-
+  // in manual mode let's not check the limits
+  state->check_limits = 0;
   if (rc = start_servo(state)) {
     return rc;
   }

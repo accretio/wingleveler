@@ -19,7 +19,7 @@ void *execute(void *arg)
       pthread_mutex_unlock(&mtx);
       break; 
     case MOVE_LEFT:
-      if (state->current_step > 0) {
+      if (state->current_step > 0 || state->check_limits == 0) {
         set_direction(state, NEMA_DIRECTION_LEFT);
         step(state);
       } else {
@@ -28,7 +28,7 @@ void *execute(void *arg)
       }
       break;
     case MOVE_RIGHT:
-      if (state->current_step < MAX_STEP) {
+      if (state->current_step < MAX_STEP || state->check_limits == 0) {
         set_direction(state, NEMA_DIRECTION_RIGHT);
         step(state);
       } else {

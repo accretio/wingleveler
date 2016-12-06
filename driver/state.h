@@ -41,6 +41,7 @@ struct state_t
   // servo
   int action;
   pthread_t servo_thread;
+  int check_limits;
 
 };
 

@@ -35,7 +35,7 @@ int read_dmp(struct state_t *state)
     // Fell behind, reading again
     if (dmp_read_fifo(state->rawGyro, state->rawAccel, state->rawQuat, &state->dmpTimestamp, &sensors, &more) < 0) {
       printf("dmp_read_fifo() failed\n");
-      return -1;
+      return 0; // (maybe -1??)
     }
   }
 
@@ -57,8 +57,7 @@ void refresh_ahrs(struct state_t *state)
     // skip the beat
     return;
   } else {
-    printf("new mpu data: %ld %ld %ld %ld\n", state->rawQuat[0], state->rawQuat[1], state->rawQuat[2], state->rawQuat[3]);
-            
+             
     dmpQuat[QUAT_W] = (float)state->rawQuat[QUAT_W];
     dmpQuat[QUAT_X] = (float)state->rawQuat[QUAT_X];
     dmpQuat[QUAT_Y] = (float)state->rawQuat[QUAT_Y];
@@ -67,7 +66,7 @@ void refresh_ahrs(struct state_t *state)
     quaternionNormalize(dmpQuat);
     quaternionToEuler(dmpQuat, dmpEuler);
                 
-    bank = dmpEuler[0] * RAD_TO_DEGREE;
+    bank = dmpEuler[0] * RAD_TO_DEGREE - state->bank_reference;
 
     state->bank_delta =
       (bank - state->bank) / (state->dmpTimestamp - state->bankTimestamp) * 1000.0 ; // bank delta in degree/s

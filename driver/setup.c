@@ -93,8 +93,10 @@ int setup_state(struct state_t *state)
   state->compass_range[VEC_Y] = 640;
   state->action = DONT_MOVE;
   state->bank_delta = 0.0;
+  state->bank_reference = 0.0;
   state->max_step = MAX_STEP;
   state->nema_pause = NEMA_17_STEP_PAUSE;
+  state->check_limits = 1;
  
   return 0; 
 }

@@ -16,12 +16,16 @@
 
 int automated_loop(struct state_t *state)
 {
-
+  refresh_ahrs(state);
+  linux_delay_ms(WARMING_DELAY);
+  refresh_ahrs(state);
+  state->bank_reference=state->bank;
   while(!kbhit()) {
     refresh_ahrs(state);
-    printf("current bank: %f, current bank rate: %f\n",
+    printf("current bank: %f, current bank rate: %f, current action: %d\n",
            state->bank,
-           state->bank_delta);
+           state->bank_delta,
+           state->action);
 
    
     if (fabs(state->bank) < BANK_TOLERANCE) {
@@ -29,8 +33,9 @@ int automated_loop(struct state_t *state)
     } else {
       // let's target a bank_delta of -state->bank
       float target = - BANK_CORRECTION_FACTOR * state->bank;
+      printf("target is %f\n", target);
       if (state->bank < 0) {
-        if (state->bank_delta < target) {
+        if (state->bank_delta > target) {
           state->action = MOVE_RIGHT; 
         } else {
           state->action = MOVE_LEFT;

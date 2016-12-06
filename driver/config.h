@@ -28,7 +28,8 @@
 
 // Wing leveler configuration
 
-#define MAX_STEP 4000
+// TODO use limit switches instead of hardcoded limits
+#define MAX_STEP 6655
 
 #define DRIFT_THRESHOLD 1
 #define DRIFT_MAX 30
@@ -42,5 +43,7 @@
 
 #define BANK_TOLERANCE 1
 #define BANK_CORRECTION_FACTOR 1
+
+#define WARMING_DELAY 5000
 
 #endif
