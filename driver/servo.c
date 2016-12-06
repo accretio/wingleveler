@@ -9,8 +9,9 @@
 pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
 pthread_mutex_t mtx = PTHREAD_MUTEX_INITIALIZER;
 
-void *execute(struct state_t *state)
+void *execute(void *arg)
 {
+  struct state_t *state = arg; 
   while(1) {
     switch(state->action) {
     case DONT_MOVE:
