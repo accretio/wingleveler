@@ -2,26 +2,10 @@
 // the problem is that it causes the signal to be delayed
 // and we are already running behind somehow.
 
-#define RING_BUFFER_SIZE 20
-
-
 #include <stdio.h>
 #include <math.h>
 #include <pthread.h>
-
-
-struct measurement_t {
-  float timestamp;
-  float value;
-};
-  
-struct smoother_t
-{
-  struct measurement_t ring_buffer[RING_BUFFER_SIZE];
-  int pos;
-  pthread_mutex_t mtx;
-  int ready;
-};
+#include <smoother.h>
 
 int smoother_init(struct smoother_t *smoother) {
   int rc;
@@ -98,6 +82,9 @@ void smoother_display(struct smoother_t *smoother) {
   return; 
   
 }
+
+
+/*
 int main() {
   int rc; 
   printf("testing the smoother\n");
@@ -124,3 +111,4 @@ int main() {
 }
 
   
+*/

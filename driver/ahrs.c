@@ -8,6 +8,7 @@
 #include "inv_mpu_dmp_motion_driver.h"
 #include "quaternion.h"
 #include "state.h"
+#include "smoother.h"
 #include "linux_glue.h"
 
 int data_ready()
@@ -73,6 +74,8 @@ void refresh_ahrs(struct state_t *state)
 
     state->bankTimestamp = state->dmpTimestamp; 
     state->bank = bank;
+    smoother_push(&(state->bank_smoother), state->dmpTimestamp, dmpEuler[0] * RAD_TO_DEGREE); 
+    
     return;
   }
 }

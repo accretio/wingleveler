@@ -4,6 +4,7 @@
 #include "inv_mpu.h"
 #include "inv_mpu_dmp_motion_driver.h"
 #include "config.h"
+#include "smoother.h"
 #include "state.h"
 #include "servo.h"
 
@@ -97,7 +98,8 @@ int setup_state(struct state_t *state)
   state->max_step = MAX_STEP;
   state->nema_pause = NEMA_17_STEP_PAUSE;
   state->check_limits = 1;
- 
+
+  smoother_init(&(state->bank_smoother));
   return 0; 
 }
 
