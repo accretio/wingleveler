@@ -26,3 +26,7 @@ clean:
 
 send:
 	rsync -a . pi@10.0.0.138:/tmp/wingleveler
+
+
+smooth: smoother.o
+	gcc -o $@ $^ $(CFLAGS) -lm
