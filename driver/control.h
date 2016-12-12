@@ -3,5 +3,5 @@
 
 int set_direction(struct state_t *state, int direction);
 int step(struct state_t *state);
-
+int center(struct state_t *state);
 #endif

@@ -45,6 +45,14 @@ int setup_gpio(struct state_t *state)
     }
    }
 
+  printf("setting the updown\n");
+
+  gpioSetPullUpDown(GPIO_LIMIT_SWITCH_LEFT, PI_PUD_UP);
+  gpioSetPullUpDown(GPIO_LIMIT_SWITCH_RIGHT, PI_PUD_UP);
+
+
+  printf("read limit left switch: %d\n", gpioRead(GPIO_LIMIT_SWITCH_LEFT));
+  printf("read limit right switch: %d\n", gpioRead(GPIO_LIMIT_SWITCH_RIGHT));
   
   state->current_direction = NEMA_DIRECTION_RIGHT;
   state->current_step = 0; // left 
