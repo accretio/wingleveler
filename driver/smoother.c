@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <pthread.h>
-#include <smoother.h>
+#include "smoother.h"
 
 int smoother_init(struct smoother_t *smoother) {
   int rc;
@@ -35,15 +35,15 @@ void smoother_average__(struct smoother_t *smoother, struct measurement_t *measu
   float sum_values = 0.0 ;
   float min_timestamp = INFINITY;
   float max_timestamp = 0.0;
-  
-  for (int p = 0; p < len; p++) {
+  int p; 
+  for (p = 0; p < len; p++) {
     struct measurement_t m = smoother->ring_buffer[(pos + p + RING_BUFFER_SIZE) % RING_BUFFER_SIZE];
     sum_values += m.value ;
     min_timestamp = fmin(min_timestamp, m.timestamp);
     max_timestamp = fmax(max_timestamp, m.timestamp);
   }
 
-  measurement->value = sum_values / (RING_BUFFER_SIZE/2);
+  measurement->value = sum_values / len;
   measurement->timestamp = (max_timestamp + min_timestamp) / 2.0;
   return;
 
@@ -66,14 +66,12 @@ float smoother_derivative(struct smoother_t *smoother)
   
   pthread_mutex_unlock(&(smoother->mtx));
 
-  printf("m1: %f %f, m2: %f, %f\n",
-         m1.value, m1.timestamp, m2.value, m2.timestamp);
-
   return (m2.value - m1.value) / (m2.timestamp - m1.timestamp);
 }
 
 void smoother_display(struct smoother_t *smoother) {
-  for (int i=0; i < RING_BUFFER_SIZE; i++) {
+  int i;
+  for (i=0; i < RING_BUFFER_SIZE; i++) {
     int p = (smoother->pos + i +  RING_BUFFER_SIZE) % RING_BUFFER_SIZE;
     struct measurement_t m = smoother->ring_buffer[p];
     printf("(%f, %f) ", m.timestamp, m.value); 

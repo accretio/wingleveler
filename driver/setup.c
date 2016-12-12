@@ -98,7 +98,6 @@ int setup_state(struct state_t *state)
   state->max_step = MAX_STEP;
   state->nema_pause = NEMA_17_STEP_PAUSE;
   state->check_limits = 1;
-
   smoother_init(&(state->bank_smoother));
   return 0; 
 }

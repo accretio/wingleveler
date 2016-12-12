@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 #include <pthread.h>
-#include <smoother.h>
+#include "smoother.h"
 
 struct state_t
 {

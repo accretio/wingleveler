@@ -40,8 +40,13 @@ int main(int argc, char **argv)
     printf("couldn't set up properly, exiting\n");
     goto finalize; 
   }
-  while ((opt = getopt(argc, argv, "clra:m:k:")) != -1) {
+
+  while ((opt = getopt(argc, argv, "p:clra:m:k:")) != -1) {
     switch (opt) {
+    case 'p':
+      start_ahrs(&state);
+      start_logging_directly(&state, optarg);
+      break;
     case 'c':
       calibrate(&state);
       break;

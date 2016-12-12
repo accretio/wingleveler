@@ -6,6 +6,7 @@
 #include <pthread.h>
 
 #include "state.h"
+#include "smoother.h"
 
 int log_state(struct state_t *state)
 {
@@ -21,10 +22,25 @@ int log_state(struct state_t *state)
          strftime(s, 1000, "%s.", p);
     */
 
-    fprintf(state->logger,"%d.%06d: bank: %f step:%d\n",
+    
+    /*  fprintf(state->logger,"%d.%06d: bank: %f, bank_delta: %f, step:%d",
             tv.tv_sec, tv.tv_usec, 
             state->bank,
+            state->bank_delta,
             state->current_step);
+    */
+    if (state->bank_smoother.ready) {
+      float bank_average;
+      float bank_derivative;
+      bank_average = smoother_average_value(&(state->bank_smoother));
+      bank_derivative = 1000 * smoother_derivative(&(state->bank_smoother));
+      fprintf(state->logger, "%d.%06d, %f, %f, %f, %f",  tv.tv_sec, tv.tv_usec, 
+            state->bank,
+              state->bank_delta, bank_average, bank_derivative);
+
+     fprintf(state->logger, "\n");
+    }
+   
   }
 }
 
@@ -45,11 +61,25 @@ int start_logging(struct state_t *state, char *path)
   int rc;
   pthread_t thread;
 
-  printf("starting logging to %s\n", path);
-  state->logger = fopen(path, "a+");
-  
+  if (strcmp(path, "stdout")) {
+    state->logger = fopen(path, "a+");
+  } else {
+    state->logger = stdout; 
+  }
   if (rc = pthread_create(&thread, NULL, logging_loop, (void *)state)) {
     return rc; 
   } 
   return 0;
+}
+
+int start_logging_directly(struct state_t *state, char *path)
+{
+  if (strcmp(path, "stdout")) {
+    state->logger = fopen(path, "a+");
+  } else {
+    state->logger = stdout; 
+  }
+  while(!kbhit()) {
+    logging_loop(state);
+  }
 }
