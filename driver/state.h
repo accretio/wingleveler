@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <pthread.h>
+#include "smoother.h"
 
 struct state_t
 {
@@ -33,6 +34,8 @@ struct state_t
   float bank;
   float bank_reference;
   float bank_delta;
+  struct smoother_t bank_smoother;
+  
   unsigned long bankTimestamp; 
   
   // logging
