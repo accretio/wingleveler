@@ -40,8 +40,8 @@ int main(int argc, char **argv)
     printf("couldn't set up properly, exiting\n");
     goto finalize; 
   }
-
-  while ((opt = getopt(argc, argv, "p:clra:m:k:")) != -1) {
+  
+  while ((opt = getopt(argc, argv, "culrp:a:m:k:")) != -1) {
     switch (opt) {
     case 'p':
       start_ahrs(&state);
@@ -49,6 +49,9 @@ int main(int argc, char **argv)
       break;
     case 'c':
       calibrate(&state);
+      break;
+    case 'u':
+      center(&state);
       break;
     case 'l':
       set_direction(&state, NEMA_DIRECTION_LEFT);
@@ -65,11 +68,13 @@ int main(int argc, char **argv)
       printf("final position is %d\n", state.current_step);
       break;
     case 'm':
+      center(&state);
       start_logging(&state, optarg);
       start_ahrs(&state); 
       manual_loop(&state);
       goto finalize;
     case 'a':
+      center(&state);
       printf("wing leveler is ready (max_step: %d) !\n", state.max_step);
       start_logging(&state, optarg);
       automated_loop(&state);

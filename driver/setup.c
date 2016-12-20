@@ -31,6 +31,30 @@ int setup_gpio(struct state_t *state)
     printf("couldn't set up the direction to the left\n");
     return -1;
   }
+
+  if (gpioGetMode(GPIO_LIMIT_SWITCH_LEFT) != PI_INPUT) {
+    if (gpioSetMode(GPIO_LIMIT_SWITCH_LEFT, PI_INPUT)) {
+      printf("couldn't set up the limit switch mode\n");
+      return -1;
+    }
+   }
+
+  if (gpioGetMode(GPIO_LIMIT_SWITCH_RIGHT) != PI_INPUT) {
+    if (gpioSetMode(GPIO_LIMIT_SWITCH_RIGHT, PI_INPUT)) {
+      printf("couldn't set up the limit switch mode\n");
+      return -1;
+    }
+   }
+
+  printf("setting the updown\n");
+
+  gpioSetPullUpDown(GPIO_LIMIT_SWITCH_LEFT, PI_PUD_UP);
+  gpioSetPullUpDown(GPIO_LIMIT_SWITCH_RIGHT, PI_PUD_UP);
+
+
+  printf("read limit left switch: %d\n", gpioRead(GPIO_LIMIT_SWITCH_LEFT));
+  printf("read limit right switch: %d\n", gpioRead(GPIO_LIMIT_SWITCH_RIGHT));
+  
   state->current_direction = NEMA_DIRECTION_RIGHT;
   state->current_step = 0; // left 
   state->stepping_rate = MONITORING_DELAY * 1000 / NEMA_17_STEP_PAUSE;
