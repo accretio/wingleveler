@@ -40,7 +40,7 @@ int main(int argc, char **argv)
     printf("couldn't set up properly, exiting\n");
     goto finalize; 
   }
-  while ((opt = getopt(argc, argv, "culra:m:k:")) != -1) {
+  while ((opt = getopt(argc, argv, "culrv:a:m:k:")) != -1) {
     switch (opt) {
     case 'c':
       calibrate(&state);
@@ -67,6 +67,11 @@ int main(int argc, char **argv)
       start_logging(&state, optarg);
       start_ahrs(&state); 
       manual_loop(&state);
+      goto finalize;
+    case 'v':
+      start_logging(&state, optarg);
+      start_ahrs(&state); 
+      getchar();
       goto finalize;
     case 'a':
       center(&state);
